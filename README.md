@@ -42,8 +42,8 @@ Contact: [Zhe Cao](http://www.andrew.cmu.edu/user/zhecao)  Email: zhecao@cmu.edu
 
 ### C++ (realtime version, for demo purpose)
 - Use our modified caffe: [caffe_rtpose](https://github.com/CMU-Perceptual-Computing-Lab/caffe_demo/). Follow the instruction on that repo. 
-- In May 2017, we released an updated library [openPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)
-- Three input options: images, video, webcam
+- In May 2017, we released an updated library [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose).
+- Three input options: images, video, webcam.
 
 ### Matlab (slower, for COCO evaluation)
 - Compatible with general [Caffe](http://caffe.berkeleyvision.org/). Compile matcaffe. 
@@ -51,9 +51,9 @@ Contact: [Zhe Cao](http://www.andrew.cmu.edu/user/zhecao)  Email: zhecao@cmu.edu
 - Change the caffepath in the `config.m` and run `demo.m` for an example usage.
 
 ### Python
-- `cd testing/python`
-- `ipython notebook`
-- Open `demo.ipynb` and execute the code
+- `cd testing/python`.
+- `ipython notebook`.
+- Open `demo.ipynb` and execute the code.
 
 
 
@@ -89,7 +89,7 @@ Contact: [Zhe Cao](http://www.andrew.cmu.edu/user/zhecao)  Email: zhecao@cmu.edu
 
 
 ## Related Repositories
-- Our new C++ library [openPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose).
+- Our new C++ library [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose).
 - CVPR'16, [Convolutional Pose Machines](https://github.com/shihenw/convolutional-pose-machines-release).
 - [Pytorch version of the code](https://github.com/tensorboy/pytorch_Realtime_Multi-Person_Pose_Estimation).
 
