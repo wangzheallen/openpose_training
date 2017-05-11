@@ -58,7 +58,6 @@ Contact: [Zhe Cao](http://www.andrew.cmu.edu/user/zhecao)  Email: zhecao@cmu.edu
 
 
 ## Training
-
 ### Network Architecture
 ![Teaser?](https://github.com/ZheC/Multi-Person-Pose-Estimation/blob/master/readme/arch.png)
 
@@ -89,12 +88,7 @@ Contact: [Zhe Cao](http://www.andrew.cmu.edu/user/zhecao)  Email: zhecao@cmu.edu
 
 
 
-## Related repository
-CVPR'16, [Convolutional Pose Machines](https://github.com/shihenw/convolutional-pose-machines-release).
-
-
-
-## Related repository
+## Related Repositories
 - Our new C++ library [openPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose).
 - CVPR'16, [Convolutional Pose Machines](https://github.com/shihenw/convolutional-pose-machines-release).
 - [Pytorch version of the code](https://github.com/tensorboy/pytorch_Realtime_Multi-Person_Pose_Estimation).
