@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+/media/gines/75af96b4-fc74-49ec-abe7-e6122c77bd85/Datasets/openpose_training/data/caffe_train/build/tools/caffe train --solver=pose_solver.prototxt --gpu=$1 --weights=/media/gines/75af96b4-fc74-49ec-abe7-e6122c77bd85/Datasets/openpose_training/data/vgg/VGG_ILSVRC_19_layers.caffemodel 2>&1 | tee ./output.txt
