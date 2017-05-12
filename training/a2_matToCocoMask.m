@@ -39,8 +39,8 @@ for mode = 0:1
     % Display progress bar
     progressBarInit();
     % Enable parfor to speed up the code
-%     parfor i = 1:L
-    for i = 1:numberImagesWithPeople
+    parfor i = 1:numberImagesWithPeople
+%     for i = 1:numberImagesWithPeople
         % Update progress bar
         progressBarUpdate(i, numberImagesWithPeople);
         % Paths
@@ -106,24 +106,24 @@ for mode = 0:1
             % Writing resulting image masks
             imwrite(maskAll, maskAllPath);
             imwrite(maskMiss, maskMissPath);
-            % Visualization (debugging purposes)
-            if debug_visualize == 1 && flag == 1
-                [~, fileName, ~] = fileparts(imagePath);
-                titleBase = [fileName, ' - '];
-                % maskPersonP (last person individual mask)
-                figure(1), blendMask(image, maskPersonP, [titleBase, 'maskPersonP']);
-                % maskAll
-                figure(2), blendMask(image, maskAll, [titleBase, 'all mask']);
-                % maskMiss
-                figure(3), blendMask(image, maskMiss, [titleBase, 'miss mask']);
-                % maskCrowd
-                figure(4), blendMask(image, maskCrowd, [titleBase, 'crowd mask']);
-                % Pause
-                pause;
-                close all;
-            elseif flag > 1
-                display([num2str(i) ' ' num2str(p)]);
-            end
+%             % Visualization (debugging purposes)
+%             if debug_visualize == 1 && flag == 1
+%                 [~, fileName, ~] = fileparts(imagePath);
+%                 titleBase = [fileName, ' - '];
+%                 % maskPersonP (last person individual mask)
+%                 figure(1), blendMask(image, maskPersonP, [titleBase, 'maskPersonP']);
+%                 % maskAll
+%                 figure(2), blendMask(image, maskAll, [titleBase, 'all mask']);
+%                 % maskMiss
+%                 figure(3), blendMask(image, maskMiss, [titleBase, 'miss mask']);
+%                 % maskCrowd
+%                 figure(4), blendMask(image, maskCrowd, [titleBase, 'crowd mask']);
+%                 % Pause
+%                 pause;
+%                 close all;
+%             elseif flag > 1
+%                 display([num2str(i) ' ' num2str(p)]);
+%             end
         end
     end
 end
