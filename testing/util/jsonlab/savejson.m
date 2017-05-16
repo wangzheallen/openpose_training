@@ -247,8 +247,18 @@ end
 
 fwrite(fid, txt);
 txt = '';
+% OpenPose: Init edited code
+% % fprintf('Init copying to disk...\n');
+printEveryXFrames = round(dim(2)/10);
 for j=1:dim(2)
-  fprintf('%d/%d\n', j, dim(2));
+%   fprintf('%d/%d\n', j, dim(2));
+  if mod(j, printEveryXFrames) == 0
+    fprintf('%d/%d\t', j, dim(2));
+    if mod(j, 5*printEveryXFrames) == 0
+      fprintf('\n');
+    end
+  end
+  % OpenPose: End edited code
   if(dim(1)>1) txt=sprintf('%s%s[%s',txt,padding2,nl); end
   for i=1:dim(1)
     names = fieldnames(item(i,j));

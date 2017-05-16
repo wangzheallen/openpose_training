@@ -1,4 +1,7 @@
-%% Run getANNO.m in matlab to convert the annotation format from json to mat in {...}/dataset/COCO/mat/
+%% COCO JSON to Mat format
+% Convert the COCO JSON to a Mat file
+% Main difference:
+% element / individual (COCO JSON) vs. element / pic with > 0 people (Mat file)
 close all; clear variables; clc; tic
 
 % Useful information
@@ -67,14 +70,7 @@ for mode = 0:1
         % Remember last image id
         previousImageId = imageId;
         % Display progress
-        if mod(i, logEveryXFrames) == 0
-            fprintf('%d/%d', i, numberAnnotations);
-            if mod(i, 6*logEveryXFrames) == 0
-                fprintf('\n');
-            else
-                fprintf('\t');
-            end
-        end
+        progressDisplay(i, logEveryXFrames, numberAnnotations);
     end
     fprintf('\nFinished!\n\n');
     % Save MAT format file
