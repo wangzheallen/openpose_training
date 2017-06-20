@@ -2,7 +2,10 @@
 % Convert the COCO JSON to a Mat file
 % Main difference:
 % element / individual (COCO JSON) vs. element / pic with > 0 people (Mat file)
-close all; clear variables; clc; tic
+close all; clear variables; clc;
+
+% Time measurement
+tic
 
 % Useful information
 % This lines can be executed after the code has finished
@@ -14,10 +17,10 @@ close all; clear variables; clc; tic
 loadConfigParameters
 
 % Add COCO Matlab API folder (in order to use its API)
-addpath([datasetFolder, '/coco/MatlabAPI/']);
+addpath([sDatasetFolder, '/coco/MatlabAPI/']);
 
 % Create folder where results will be saved
-mkdir(matFolder)
+mkdir(sMatFolder)
 
 % COCO options
 annTypes = {'instances', 'captions', 'person_keypoints'};
@@ -33,7 +36,7 @@ for mode = 0:1
         dataType = 'train2014';
     end
     fprintf(['Converting ', dataType, '\n']);
-    annotationsFile = sprintf([annotationsFolder, '%s_%s.json'], annType, dataType);
+    annotationsFile = sprintf([sAnnotationsFolder, '%s_%s.json'], annType, dataType);
     coco = CocoApi(annotationsFile);
     % Load JSON Annotations
     jsonAnnotations = coco.data.annotations;
@@ -44,7 +47,7 @@ for mode = 0:1
     logEveryXFrames = round(numberAnnotations / 50);
     % Initialize matAnnotations (no memory allocation)
     matAnnotations = [];
-%     % Initialize matAnnotations (memory allocation) (slower!!!)
+%     % Initialize matAnnotations (avoid memory allocation warning) (slower!!!)
 %     numberImagesWithPeople = numel(unique(extractfield(jsonAnnotations, 'image_id')));
 %     matAnnotations = struct('image_id', []);
 %     matAnnotations(numberImagesWithPeople).image_id = [];
@@ -76,11 +79,11 @@ for mode = 0:1
     % Save MAT format file
     if mode == 0
         coco_val = matAnnotations;
-        save([matFolder, 'coco_val.mat'], 'coco_val');
+        save([sMatFolder, 'coco_val.mat'], 'coco_val');
     else
         coco_kpt = matAnnotations;
-        save([matFolder, 'coco_kpt.mat'], 'coco_kpt');
+        save([sMatFolder, 'coco_kpt.mat'], 'coco_kpt');
     end
 end
 % Total running time
-disp(['Total time getANNO.m: ', int2str(round(toc)), ' seconds.']);
+disp(['Total time a1_jsonToMat.m: ', int2str(round(toc)), ' seconds.']);

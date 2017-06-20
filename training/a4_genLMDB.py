@@ -4,7 +4,7 @@
 # User configurable paths
 import sys, os
 caffePythonPath = os.path.join('/media/gines/75af96b4-fc74-49ec-abe7-e6122c77bd85/Datasets/openpose_training/data/caffe_train', 'python/')
-datasetFolder = '../data/dataset/'
+datasetFolder = '../dataset/'
 cocoDatasetFolder = datasetFolder + 'COCO/'
 mpiDatasetFolder = datasetFolder + 'MPI/'
 cocoSavingFolder = './COCO_kpt/lmdb/'
@@ -31,7 +31,7 @@ def writeLMDB(datasets, lmdb_path, validation):
     numSample = 0
 
     for d in range(len(datasets)):
-        if(datasets[d] == "MPI"):
+        if datasets[d] == "MPI":
             print datasets[d]
             with open('MPI.json') as data_file: 
                 data_this = json.load(data_file)
@@ -40,7 +40,7 @@ def writeLMDB(datasets, lmdb_path, validation):
             numSample = len(data)
             #print data
             print numSample
-        elif(datasets[d] == "COCO"):
+        elif datasets[d] == "COCO":
             print datasets[d]
             with open(cocoDatasetFolder + 'json/COCO.json') as data_file:
                 data_this = json.load(data_file)
@@ -53,7 +53,7 @@ def writeLMDB(datasets, lmdb_path, validation):
     random_order = np.random.permutation(numSample).tolist()
     
     isValidationArray = [data[i]['isValidation'] for i in range(numSample)];
-    if(validation == 1):
+    if validation == 1:
         totalWriteCount = isValidationArray.count(0.0);
     else:
         totalWriteCount = len(data)
@@ -92,7 +92,7 @@ def writeLMDB(datasets, lmdb_path, validation):
 
         height = img.shape[0]
         width = img.shape[1]
-        if(width < 64):
+        if width < 64:
             img = cv2.copyMakeBorder(img,0,0,0,64-width,cv2.BORDER_CONSTANT,value=(128,128,128))
             print 'saving padded image!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
             cv2.imwrite('padded_img.jpg', img)
@@ -147,8 +147,8 @@ def writeLMDB(datasets, lmdb_path, validation):
                 meta_data[clidx][j] = ord(row_binary[j])
             clidx = clidx + 1
         # (e) check nop, prepare arrays
-        if(nop!=0):
-            if(nop==1):
+        if nop!=0:
+            if nop==1:
                 joint_other = [data[idx]['joint_others']]
                 objpos_other = [data[idx]['objpos_other']]
                 scale_provided_other = [data[idx]['scale_provided_other']]
@@ -175,7 +175,7 @@ def writeLMDB(datasets, lmdb_path, validation):
                     for j in range(len(row_binary)):
                         meta_data[clidx][j] = ord(row_binary[j])
                     clidx = clidx + 1
-        
+
         # print meta_data[0:12,0:48] 
         # total 7 + 4*nop lines
         if "COCO" in data[idx]['dataset']:
@@ -186,11 +186,11 @@ def writeLMDB(datasets, lmdb_path, validation):
 
         img4ch = np.transpose(img4ch, (2, 0, 1))
         print img4ch.shape
-        
+
         datum = caffe.io.array_to_datum(img4ch, label=0)
         key = '%07d' % writeCount
         txn.put(key, datum.SerializeToString())
-        if(writeCount % 1000 == 0):
+        if writeCount % 1000 == 0:
             txn.commit()
             txn = env.begin(write=True)
         print '%d/%d/%d/%d' % (count,writeCount,idx,numSample)

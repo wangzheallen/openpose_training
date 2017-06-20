@@ -2,7 +2,11 @@
 % Not all COCO images are completely labeled. These masks will tell the
 % algorithm which body parts are not labeled, so it does not wrongly uses
 % them to generate the brackground heat maps 
-close all; clear variables; clc
+close all; clear variables
+% clc
+
+% Time measurement
+tic
 
 % Note:
 % By default, this code uses the 'parfor' loop in order to speed up the code.
@@ -16,20 +20,18 @@ close all; clear variables; clc
 
 % User-configurable parameters
 loadConfigParameters
+debugVisualize = false; % Debugging: enable to plot images with mask overlapped
+disableWarnings = true;
 
 % Add COCO Matlab API folder (in order to use its API)
-addpath(cocoMatlabApiFolder);
+addpath(sCocoMatlabApiFolder);
 
 % Load auxiliary functions
 % addpath('../testing/util/'); % mat2im
 addpath('util/'); % progressBarInit, progressBarUpdate, blendMask
 
 % Create directory to save generated masks
-mkdir(maskFolder)
-
-% Debugging: enable to plot images with mask overlapped
-debugVisualize = false;
-disableWarnings = true;
+mkdir(sImageMaskFolder)
 
 % Start parpool if not started
 % Option a
@@ -44,11 +46,11 @@ end
 for mode = 0:1
     % Load annotations from MAT file
     if mode == 0
-        load([matFolder, 'coco_val.mat']);
+        load([sMatFolder, 'coco_val.mat']);
         dataType = 'val2014';
         matAnnotations = coco_val;
     else
-        load([matFolder, 'coco_kpt.mat']);
+        load([sMatFolder, 'coco_kpt.mat']);
         dataType = 'train2014';
         matAnnotations = coco_kpt;
     end
@@ -56,14 +58,14 @@ for mode = 0:1
     % Display progress bar
     progressBarInit();
     % Enable parfor to speed up the code
-    parfor i = 1:numberImagesWithPeople
-%     for i = 1:numberImagesWithPeople
+    parfor imageIndex = 1:numberImagesWithPeople
+%     for imageIndex = 1:numberImagesWithPeople
         % Update progress bar
-        progressBarUpdate(i, numberImagesWithPeople);
+        progressBarUpdate(imageIndex, numberImagesWithPeople);
         % Paths
-        imagePath = sprintf(['images/', dataType, '/COCO_', dataType, '_%012d.jpg'], matAnnotations(i).image_id);
-        maskAllPath = sprintf([maskFolder, dataType, '_mask_all_%012d.png'], matAnnotations(i).image_id);
-        maskMissPath = sprintf([maskFolder, dataType, '_mask_miss_%012d.png'], matAnnotations(i).image_id);
+        imagePath = sprintf(['images/', dataType, '/COCO_', dataType, '_%012d.jpg'], matAnnotations(imageIndex).image_id);
+        maskAllPath = sprintf([sImageMaskFolder, dataType, '_mask_all_%012d.png'], matAnnotations(imageIndex).image_id);
+        maskMissPath = sprintf([sImageMaskFolder, dataType, '_mask_miss_%012d.png'], matAnnotations(imageIndex).image_id);
         % If files exist -> skip (so it can be resumed if cancelled)
         maskNotGenerated = true;
         try
@@ -84,23 +86,23 @@ for mode = 0:1
         % Generate and write masks
         if maskNotGenerated
             % Generate masks
-            image = imread([datasetFolder, imagePath]);
+            image = imread([sDatasetFolder, imagePath]);
             [h, w, ~] = size(image);
             maskAll = false(h, w);
             maskMiss = false(h, w);
-            peopleOnImageI = length(matAnnotations(i).annorect);
+            peopleOnImageI = length(matAnnotations(imageIndex).annorect);
             % If image i is not completely segmented for all people
             try
                 % Fill maskAll and maskMiss from each person on image i
                 for p = 1:peopleOnImageI
                     % Get person individual mask
-                    segmentation = matAnnotations(i).annorect(p).segmentation{1};
+                    segmentation = matAnnotations(imageIndex).annorect(p).segmentation{1};
                     [X,Y] = meshgrid( 1:w, 1:h );
                     maskPersonP = inpolygon(X, Y, segmentation(1:2:end), segmentation(2:2:end));
                     % Fill mask all
                     maskAll = or(maskPersonP, maskAll);
                     % If not annotations, fill mask miss
-                    if matAnnotations(i).annorect(p).num_keypoints <= 0
+                    if matAnnotations(imageIndex).annorect(p).num_keypoints <= 0
                         maskMiss = or(maskPersonP, maskMiss);
                     end
                 end
@@ -108,7 +110,7 @@ for mode = 0:1
             % If image i is not completely segmented for all people
             catch
                 assert(p == peopleOnImageI, 'p should be the last element if no annotations are found!');
-                maskNoAnnotations = logical(MaskApi.decode(matAnnotations(i).annorect(p).segmentation));
+                maskNoAnnotations = logical(MaskApi.decode(matAnnotations(imageIndex).annorect(p).segmentation));
                 maskCrowd = maskNoAnnotations - and(maskAll, maskNoAnnotations);
                 maskMiss = not(or(maskMiss, maskCrowd));
                 maskAll = or(maskAll, maskCrowd);
@@ -131,6 +133,7 @@ for mode = 0:1
                     figure(4), blendMask(image, maskCrowd, [titleBase, 'crowd mask']);
                     % maskCrowd
                     figure(5), blendMask(image, maskNoAnnotations, [titleBase, 'no annotations mask']);
+                    clear maskCrowd
                 end
                 % Pause
                 pause;
@@ -142,3 +145,6 @@ end
 if disableWarnings
     warning ('on','all');
 end
+
+% Total running time
+disp(['Total time a2_matToMasks.m: ', int2str(round(toc)), ' seconds.']);
