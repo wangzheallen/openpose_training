@@ -3,7 +3,7 @@
 
 # User configurable paths
 import sys, os
-caffePythonPath = os.path.join('/media/gines/75af96b4-fc74-49ec-abe7-e6122c77bd85/Datasets/openpose_training/data/caffe_train', 'python/')
+caffePythonPath = os.path.join('/home/gines/devel/openpose_caffe_train', 'python/')
 datasetFolder = '../dataset/'
 cocoDatasetFolder = datasetFolder + 'COCO/'
 mpiDatasetFolder = datasetFolder + 'MPI/'

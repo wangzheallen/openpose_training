@@ -1,3 +1,11 @@
-mkdir lmdb_trainVal
-wget -nc --directory-prefix=lmdb_trainVal/ 		http://posefs1.perception.cs.cmu.edu/Users/ZheCao/lmdb_trainVal/data.mdb
-wget -nc --directory-prefix=lmdb_trainVal/ 		http://posefs1.perception.cs.cmu.edu/Users/ZheCao/lmdb_trainVal/lock.mdb
+######################### DOWNLOADING LMDB PREPARED DATASET #########################
+# Parameters
+FOLDER_LOCATION='../dataset/lmdb_for_training/'
+BASIC_URL='http://posefs1.perception.cs.cmu.edu/OpenPose/training/body_18/lmdb_for_training/'
+
+# Create desired folder
+mkdir $FOLDER_LOCATION
+
+# Download LMDB files
+wget -nc --directory-prefix=$FOLDER_LOCATION  	${BASIC_URL}data.mdb
+wget -nc --directory-prefix=$FOLDER_LOCATION    ${BASIC_URL}lock.mdb

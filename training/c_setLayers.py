@@ -1,10 +1,10 @@
 # User configurable paths
 ## Path parameters
 import os
-# sCaffeFolder =  '../caffe_train/'
-sCaffeFolder =  '/home/gines/devel/caffe_train/'
-sLmdbFolder = '../lmdb_trainVal/'
-sPretrainedModelPath = '../vgg/VGG_ILSVRC_19_layers.caffemodel'
+sCaffeFolder =  '/home/gines/devel/openpose_caffe_train/'
+sDatasetFolder = '../dataset/'
+sLmdbFolder = sDatasetFolder + 'lmdb_for_training/'
+sPretrainedModelPath = sDatasetFolder + 'vgg/VGG_ILSVRC_19_layers.caffemodel'
 sTrainingFolder = '../training_results/pose/'
 sTrainedModelsFolder = os.path.join(sTrainingFolder, 'model')
 # Relative paths to full paths
@@ -13,6 +13,14 @@ sLmdbFolder = os.path.abspath(sLmdbFolder)
 sPretrainedModelPath = os.path.abspath(sPretrainedModelPath)
 sTrainingFolder = os.path.abspath(sTrainingFolder)
 sTrainedModelsFolder = os.path.abspath(sTrainedModelsFolder)
+
+# Debugging - Check absolute paths
+print 'Absolute paths:'
+print 'sCaffeFolder absolute path:\n\t' + sCaffeFolder
+print 'sLmdbFolder absolute path:\n\t' + sLmdbFolder
+print 'sPretrainedModelPath absolute path:\n\t' + sPretrainedModelPath
+print 'sTrainingFolder absolute path:\n\t' + sTrainingFolder
+print 'sTrainedModelsFolder absolute path:\n\t' + sTrainedModelsFolder
 
 ## Algorithm parameters
 sNumberKeyPoints = 18;
