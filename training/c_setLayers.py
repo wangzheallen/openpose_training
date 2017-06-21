@@ -25,16 +25,16 @@ print 'sTrainedModelsFolder absolute path:\n\t' + sTrainedModelsFolder
 ## Algorithm parameters
 sNumberKeyPoints = 18;
 sNumberKeyPointsPlusBackground = sNumberKeyPoints+1;
-sNumberPAFs = 38;
+sNumberPAFs = 2*19;
 sImageScale = 368;
 sLearningRateInit = 2e-5   # 4e-5, 2e-5
-sBatchSize = 21 # 10
+sBatchSize = 10 # 10, Gines: 21
 sNumberTotalParts = 56
 sNumberBodyPartsInLmdb = 17
-sMaxRotationDegree = 180 # 40
+sMaxRotationDegree = 40 # 40, Gines: 180
 sBatchNorm = 0
 sNumberStages = 6
-sScaleMin = 0.1 # 0.5
+sScaleMin = 0.5 # 0.5, Gines: 0.1
 sScaleMax = 1.1
 
 # Things to try:
@@ -71,8 +71,8 @@ def setLayersTwoBranches(dataFolder, batchSize, layerName, kernel, stride, numbe
         input = "image"
         dim1 = 1
         dim2 = 3
-        dim3 = 1 # sImageScale
-        dim4 = 1 # sImageScale
+        dim3 = 1 # Reshaped on runtime
+        dim4 = 1 # Reshaped on runtime
         # make an empty "data" layer so the next layer accepting input will be able to take the correct blob name "data",
         # we will later have to remove this layer from the serialization string, since this is just a placeholder
         caffeNet.image = L.Layer()
@@ -408,29 +408,29 @@ if __name__ == "__main__":
     if not os.path.exists(sTrainingFolder):
         os.makedirs(sTrainingFolder)
 
-    # # Original/fast versions
-    # # First stage             ----------------------- VGG 19 ----------------------- --------------------------------------------------- CPM ---------------------------------------------------
-    # layerName               = ['V','V','P'] * 2  +  ['V'] * 4 + ['P']  +  ['V'] * 2 + ['C'] * 2     + ['$'] + ['C2'] * 3 + ['C2'] * 2                       + ['L2']
-    # kernel                  = [ 3,  3,  2 ] * 2  +  [ 3 ] * 4 + [ 2 ]  +  [ 3 ] * 2 + [ 3 ] * 2     + [ 0 ] + [ 3 ] * 3  + [ 1 ] * 2                        + [ 0 ]
-    # # numberOutputChannels    = [64]*3 + [128]* 3  +  [256] * 4 + [256]  +  [512] * 2 + [256] + [128] + [ 0 ] + [128] * 3  + [512] + [sNumberTotalParts*2]    + [ 0 ] 
-    # # numberOutputChannels    = [64]*3 + [128]* 3  +  [256] * 4 + [256]  +  [512] * 2 + [256] + [128] + [ 0 ] + [128] * 3  + [256] + [sNumberTotalParts*2]    + [ 0 ] # Super-fast version 1/2
-    # numberOutputChannels    = [64]*3 + [128]* 3  +  [256] * 4 + [256]  +  [512] * 2 + [256] + [128] + [ 0 ] + [128] * 3  + [128] + [sNumberTotalParts*2]    + [ 0 ] # Super-fast version 2/2
-    # stride                  = [ 1 , 1,  2 ] * 2  +  [ 1 ] * 4 + [ 2 ]  +  [ 1 ] * 2 + [ 1 ] * 2     + [ 0 ] + [ 1 ] * 3  + [ 1 ] * 2                        + [ 0 ]
-
-    # Super-fast version
+    # Original/fast versions
     # First stage             ----------------------- VGG 19 ----------------------- --------------------------------------------------- CPM ---------------------------------------------------
-    layerName               = ['V','V','P'] * 2  +  ['V'] * 4 + ['P']  +  ['V'] * 2 + ['C'] * 2     + ['$'] + ['C2'] * 2 + ['C2']                   + ['L2']
-    kernel                  = [ 3,  3,  2 ] * 2  +  [ 3 ] * 4 + [ 2 ]  +  [ 3 ] * 2 + [ 3 ] * 2     + [ 0 ] + [ 3 ] * 2  + [ 1 ]                    + [ 0 ]
-    numberOutputChannels    = [64]*3 + [128]* 3  +  [256] * 4 + [256]  +  [512] * 2 + [256] + [128] + [ 0 ] + [128] * 2  + [sNumberTotalParts*2]    + [ 0 ]
-    stride                  = [ 1 , 1,  2 ] * 2  +  [ 1 ] * 4 + [ 2 ]  +  [ 1 ] * 2 + [ 1 ] * 2     + [ 0 ] + [ 1 ] * 2  + [ 1 ]                    + [ 0 ]
+    layerName               = ['V','V','P'] * 2  +  ['V'] * 4 + ['P']  +  ['V'] * 2 + ['C'] * 2     + ['$'] + ['C2'] * 3 + ['C2'] * 2                       + ['L2']
+    kernel                  = [ 3,  3,  2 ] * 2  +  [ 3 ] * 4 + [ 2 ]  +  [ 3 ] * 2 + [ 3 ] * 2     + [ 0 ] + [ 3 ] * 3  + [ 1 ] * 2                        + [ 0 ]
+    numberOutputChannels    = [64]*3 + [128]* 3  +  [256] * 4 + [256]  +  [512] * 2 + [256] + [128] + [ 0 ] + [128] * 3  + [512] + [sNumberTotalParts*2]    + [ 0 ] 
+    # numberOutputChannels    = [64]*3 + [128]* 3  +  [256] * 4 + [256]  +  [512] * 2 + [256] + [128] + [ 0 ] + [128] * 3  + [256] + [sNumberTotalParts*2]    + [ 0 ] # Super-fast version 1/2
+    # numberOutputChannels    = [64]*3 + [128]* 3  +  [256] * 4 + [256]  +  [512] * 2 + [256] + [128] + [ 0 ] + [128] * 3  + [128] + [sNumberTotalParts*2]    + [ 0 ] # Super-fast version 2/2
+    stride                  = [ 1 , 1,  2 ] * 2  +  [ 1 ] * 4 + [ 2 ]  +  [ 1 ] * 2 + [ 1 ] * 2     + [ 0 ] + [ 1 ] * 3  + [ 1 ] * 2                        + [ 0 ]
+
+    # # Super-fast version
+    # # First stage             ----------------------- VGG 19 ----------------------- --------------------------------------------------- CPM ---------------------------------------------------
+    # layerName               = ['V','V','P'] * 2  +  ['V'] * 4 + ['P']  +  ['V'] * 2 + ['C'] * 2     + ['$'] + ['C2'] * 2 + ['C2']                   + ['L2']
+    # kernel                  = [ 3,  3,  2 ] * 2  +  [ 3 ] * 4 + [ 2 ]  +  [ 3 ] * 2 + [ 3 ] * 2     + [ 0 ] + [ 3 ] * 2  + [ 1 ]                    + [ 0 ]
+    # numberOutputChannels    = [64]*3 + [128]* 3  +  [256] * 4 + [256]  +  [512] * 2 + [256] + [128] + [ 0 ] + [128] * 2  + [sNumberTotalParts*2]    + [ 0 ]
+    # stride                  = [ 1 , 1,  2 ] * 2  +  [ 1 ] * 4 + [ 2 ]  +  [ 1 ] * 2 + [ 1 ] * 2     + [ 0 ] + [ 1 ] * 2  + [ 1 ]                    + [ 0 ]
 
     # Stages 2-sNumberStages   ----------------------------------------- CPM + PAF -----------------------------------------
     nodesPerLayer = 5+2
     for s in range(2, sNumberStages+1):
         layerName               += ['@'] + ['C2'] * nodesPerLayer                               +  ['L2']
         kernel                  += [ 0 ] + [ 7 ] * (nodesPerLayer-2) + [1,1]                    +  [ 0 ]
-        # numberOutputChannels    += [ 0 ] + [128] * (nodesPerLayer-1) + [sNumberTotalParts*2]    +  [ 0 ] # Original CPM + PAF
-        numberOutputChannels    += [ 0 ] + [64] * (nodesPerLayer-1) + [sNumberTotalParts*2]     +  [ 0 ] # (Super-)Fast version
+        numberOutputChannels    += [ 0 ] + [128] * (nodesPerLayer-1) + [sNumberTotalParts*2]    +  [ 0 ] # Original CPM + PAF
+        # numberOutputChannels    += [ 0 ] + [64] * (nodesPerLayer-1) + [sNumberTotalParts*2]     +  [ 0 ] # (Super-)Fast version
         # numberOutputChannels    += [ 0 ] + [32] * (nodesPerLayer-1) + [sNumberTotalParts*2]     +  [ 0 ] # Super-fast version
         stride                  += [ 0 ] + [ 1 ] * nodesPerLayer                                +  [ 0 ]
 
